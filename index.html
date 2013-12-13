@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Checkensemble by shirtsgroup</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Checkensemble</h1>
+        <p>This software allows users to perform statistical test to determine if a given molecular simulation is consistent with the thermodynamic ensemble it is performed in.</p>
+
+        <p class="view"><a href="https://github.com/shirtsgroup/checkensemble">View the Project on GitHub <small>shirtsgroup/checkensemble</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/shirtsgroup/checkensemble/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/shirtsgroup/checkensemble/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/shirtsgroup/checkensemble">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="checkensemble" class="anchor" href="#checkensemble"><span class="octicon octicon-link"></span></a>checkensemble</h1>
+
+<p>This software allows users to perform statistical test to determine if a given molecular simulation is consistent with the thermodynamic ensemble it is performed in.</p>
+
+<p>All examples can be run automatically by sourcing 'bash runexamples.sh'</p>
+
+<p>The main distribution consists of the following: </p>
+
+<ul>
+<li>checkdist.py</li>
+<li>readmdfiles.py</li>
+<li>analyze-md.py</li>
+<li>analyze-replica.py</li>
+<li>timeseries.py</li>
+</ul><p>and python code for toy models for validating the main tools:</p>
+
+<ul>
+<li>harmonic.py<br>
+</li>
+<li>harmonic_pressure.py</li>
+<li>harmonic_mu.py</li>
+</ul><p>Run 'analyze-md.py --help' for a listing and explanation of options of
+simulation output analysis.</p>
+
+<p>Run 'analyze-replica.py --help' for a listing and explanation of
+options for temperature replica exchange analysis options</p>
+
+<p>Dependencies: the code requires scipy and numpy.  matplotlib is
+required to generate graphs.</p>
+
+<p>For more data, a number of bins closer to 40 may be more appropriate,
+but the example data sets are smaller for size reasons, and thus
+require smaller bin numbers to get statistically meaningful results.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/shirtsgroup">shirtsgroup</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

@@ -271,13 +271,13 @@ def getefficiency(N_k,U_kn,V_kn,N_kn,type):
 def subsample(N_k,U_kn,V_kn,N_kn,g,type):
 
     K = len(N_k)
-    N_k_sampled = numpy.zeros(K)
+    N_k_sampled = numpy.zeros(K, dtype=numpy.int)
     tempspace = numpy.zeros(numpy.max(N_k))
     for k in range(K):
         if (type != 'volume') and (type != 'number'): 
             indices = timeseries.subsampleCorrelatedData(U_kn[k,0:N_k[k]],g[k])
             tempspace = U_kn[k,indices].copy()
-            N_k_sampled[k] = numpy.size(indices) 
+            N_k_sampled[k] = numpy.size(indices)
             U_kn[k,0:N_k_sampled[k]] = tempspace[0:N_k_sampled[k]]
         if (type in requireV):
             indices = timeseries.subsampleCorrelatedData(V_kn[k,0:N_k[k]],g[k])

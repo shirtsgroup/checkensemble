@@ -5,7 +5,7 @@
 #
 # Written by Michael R. Shirts <mrshirts@gmail.com>.
 #
-# Copyright (c) 2012 The University of Virginia. All Rights Reserved.
+# Copyright (c) 2012-2014 The University of Virginia. All Rights Reserved.
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of
 # the GNU General Public License as published by the Free Software Foundation; either version 2
@@ -41,10 +41,13 @@ def check_twodtype(type):  # check if it's a valid type
 
 def PrepConversionFactors(eunits='kJ/mol',punits='bar',vunits='nm^3'):
 
-    if (vunits == 'nm^3') and (punits == 'bar'):
-    # default conversion is gromacs nm3*bar to kJ/mol
-    # 1 nm3.bar = 0.00060221415 m3.bar / mol, 0.01 m3.bar/mol = 1 kJ/mol --> 6.0221415x10^-2 kJ/mol / nm3/bar
-        pvconvert = 0.06221415
+    if (vunits == 'nm^3'):
+        if (punits == 'bar'):
+            # default conversion is gromacs nm3*bar to kJ/mol
+            # 1 nm3.bar = 0.00060221415 m3.bar / mol, 0.01 m3.bar/mol = 1 kJ/mol --> 6.0221415x10^-2 kJ/mol / nm3/bar
+            pvconvert = 0.06221415
+        elif (punits == 'atm'):
+            pvconvert = 0.061400592   # 0.0622 (kJ*bar)/(mol*nm3) * atm/bar = 1/1.01325
     elif (vunits == 'kT' and punits == 'kT'):
         pvconvert = 1
     else:    

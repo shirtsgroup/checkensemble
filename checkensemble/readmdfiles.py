@@ -11,7 +11,7 @@
 #
 # Written by Michael R. Shirts <mrshirts@gmail.com>.
 #
-# Copyright (c) 2012 The University of Virginia. All Rights Reserved.
+# Copyright (c) 2012-2014 The University of Virginia. All Rights Reserved.
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of
 # the GNU General Public License as published by the Free Software Foundation; either version 2
@@ -55,7 +55,6 @@ def read_flatfile(lines,type,N_max):
     # we assume energy is first, then volume, then n
     for line in lines:
         if (line[0] != '#'):   # in flat file format, anything that starts with a hash is an ignored comment
-
             elements = line.split()
             numcol = len(elements)
             if (numcol == 0):
@@ -135,6 +134,68 @@ def read_gromacs(lines,type,N_max):
            N += 1 
 
     return U_n,V_n,N      
+
+def read_lammps(lines, type, N_max, units='real'):
+    
+    # allocate space
+    U_n = numpy.zeros([N_max], dtype=numpy.float64) # U_n[k,n] is the energy of the sample n
+    V_n = numpy.zeros([N_max], dtype=numpy.float64) # V_n[k,n] is the volume of the sample n
+
+    N = 0
+    ematch = False
+    vmatch = False
+    for line in lines:
+        if 'Created' in line:
+            elements = line.split()
+            if elements[2] == 'atoms':
+                Natoms = int(elements[1])
+        # Split line into elements.
+        if (line[0:4] == 'Step'): # only 'Step' contains information about what the data is. However, if multiple
+            # runs are called in the same script, then we might not actually want the first run.  This could potentially
+            # be determined from the input file.
+            elements = line.split()
+            ele_col = dict()
+            for i, e in enumerate(elements): 
+                ele_col[e] = i
+            if (type == 'potential'):
+                if 'PotEng' in elements:
+                    ecol = ele_col['PotEng']
+                    ematch = True
+            if (type == 'total') or (type == 'volume') or (type == 'enthalpy') or (type == 'jointEV'):
+                if 'TotEng' in elements:
+                    ecol = ele_col['TotEng']
+                    ematch = True
+            if (type == 'kinetic'):
+                if 'KinEng' in elements:
+                    ecol = ele_col['KinEng']
+                    ematch = True
+            if (type == 'volume') or (type == 'enthalpy') or (type == 'jointEV'):
+                if 'Volume' in elements:
+                    vcol = ele_col['Volume']
+                    vmatch = True
+            continue
+
+        if ematch or vmatch:
+            if line[0:4] == 'Loop':
+                #we've come to the end of a dynamics section, exit
+                break
+
+            elements = line.split()
+            if (type != 'volume') and ematch:
+                energy = float(elements[ecol])
+                U_n[N] = energy   
+            if (type == 'volume') or (type == 'enthalpy') or (type == 'jointEV') and vmatch:
+                volume = float(elements[vcol])
+                if units == 'real':
+                    V_n[N] = volume/1000
+                elif units == 'lj':
+                    V_n[N] = volume
+            N += 1 
+
+    if units == 'lj':
+        U_n *= Natoms  #energies are in reduced units.
+
+    return U_n, V_n, N
 
 def read_charmm(lines,type,N_max):
 

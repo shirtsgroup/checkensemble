@@ -32,7 +32,7 @@
 #===================================================================================================
 
 import numpy
-import timeseries
+import pymbar.timeseries as timeseries
 import checkensemble 
 import optparse, sys
 from optparse import OptionParser
@@ -76,10 +76,12 @@ parser.add_option("--filetype", dest="filetype", type = "string", default='flatf
 parser.add_option("--kB", dest="kB", type = "float", default=1.3806488*6.0221415/1000.0,  
                   help="Boltzmann's constant in the applicable units for this sytem")
                   # Boltzmann's constant (kJ/mol/K)
+parser.add_option("--lammps_units", dest="lammps_units", type = 'string', default='real',  
+                  help= "lammps units")
 
 (options, args) = parser.parse_args()
 
-filetypes_supported = ['flatfile','gromacs','charmm','desmond']
+filetypes_supported = ['flatfile','gromacs','charmm','desmond','lammps']
 if options.datafiles == None:
     print "\nQuitting: No files were input!\n"
     sys.exit()
@@ -209,12 +211,25 @@ for k in range(K):
     lines = infile.readlines()
     infile.close()
 
+    vunits='nm^3' 
+    punits='bar'
     if (options.filetype == 'flatfile'): # assumes kJ/mol energies, nm3 volumes
         U_kn[k,:],V_kn[k,:],N_kn[k,:], N_k[k] = readmdfiles.read_flatfile(lines,type,N_max)
         # will need to specify KB for toy models. 
     elif (options.filetype == 'gromacs'):
         U_kn[k,:],V_kn[k,:],N_k[k] = readmdfiles.read_gromacs(lines,type,N_max)
         N_kn = None
+    elif (options.filetype == 'lammps'):
+        U_kn[k,:],V_kn[k,:],N_k[k] = readmdfiles.read_lammps(lines,type,N_max,units=options.lammps_units)
+        N_kn = None
+        if options.lammps_units == 'lj':
+            vunits='kT'
+            punits='kT'
+        elif options.lammps_units == 'real':
+            punits = 'atm'
+            U_kn[k,:] *= kJperkcal
+            V_kn[k,:] *= nm3perA3
+
     elif (options.filetype == 'charmm'):
         U_kn[k,:],V_kn[k,:],N_k[k] = readmdfiles.read_charmm(lines,type,N_max)
         U_kn[k,:] *= kJperkcal
@@ -244,4 +259,4 @@ else:
 figname = options.figname
 title = options.figname
 
-checkensemble.ProbabilityAnalysis(N_k,type=analysis_type,T_k=T_k,P_k=P_k,mu_k=mu_k,U_kn=U_kn,V_kn=V_kn,N_kn=N_kn,title=title,figname=figname,nbins=nbins,reptype='bootstrap',g=g,nboots=nboots,bMaxwell=(type=='kinetic'),bLinearFit=bLinearFit,bNonLinearFit=bNonLinearFit,bMaxLikelihood=bMaxLikelihood,seed=options.seed,kB=kB)
+checkensemble.ProbabilityAnalysis(N_k,type=analysis_type,T_k=T_k,P_k=P_k,mu_k=mu_k,U_kn=U_kn,V_kn=V_kn,N_kn=N_kn,title=title,figname=figname,nbins=nbins,reptype='bootstrap',g=g,nboots=nboots,bMaxwell=(type=='kinetic'),bLinearFit=bLinearFit,bNonLinearFit=bNonLinearFit,bMaxLikelihood=bMaxLikelihood,seed=options.seed,kB=kB,vunits=vunits,punits=vunits)

@@ -1,6 +1,9 @@
 checkensemble
 =============
 
+Note: support for the functionality here has moved to https://github.com/shirtsgroup/physical_validation.  Please check out that distribution to peform the tests described in the paper below.
+
+
 This software allows users to perform statistical test to determine if a given molecular simulation is consistent with the thermodynamic ensemble it is performed in.
 
 Users should cite the JCTC paper: Shirts, "M. R. Simple Quantitative Tests to Validate Sampling from Thermodynamic Ensembles", J. Chem. Theory Comput., 2013, 9 (2), pp 909–926, http://dx.doi.org/10.1021/ct300688p
